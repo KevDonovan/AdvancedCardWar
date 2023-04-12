@@ -8,6 +8,10 @@ let remainingcards = 1;
 let playerHand = [];
 let houseHand = [];
 
+playerCards.forEach((card, i)=> {
+    card.addEventListener('click', () => playCard(i));
+});
+
 function drawHand() {
     fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
         .then(res => res.json())
@@ -36,17 +40,25 @@ function drawCard(oldCard, hand) {
     })
 }
 
-function setPoint(data) {
+function setPoint(card) {
     let sign = 1;
-    if(data.suit == 'HEARTS' || data.suit == 'DIAMONDS') sign = -1;
+    if(card.suit == 'HEARTS' || card.suit == 'DIAMONDS') sign = -1;
 
     const face = ['JACK', 'QUEEN', 'KING', 'ACE'];
     const faceVal = [11, 12, 13, 1];
 
-    if(Number(data.value) > 0) {
-        return Number(data.value) * sign;
+    if(Number(card.value) > 0) {
+        return Number(card.value) * sign;
     } else {
-        return faceVal[face.indexOf(data.value)] * sign;
+        return faceVal[face.indexOf(card.value)] * sign;
+    }
+}
+
+function playCard(n) {
+    if(remainingcards > 0) {
+        score += playerHand[n].point;
+        document.querySelector("#score").innerHTML = score;
+        drawCard(playerCards[n], 'player');
     }
 }
 
