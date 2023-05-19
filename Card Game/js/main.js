@@ -4,12 +4,15 @@ let playerCards = document.querySelectorAll(".playerHand");
 let houseCards = document.querySelectorAll(".houseHand");
 let deckID = '';
 let score = 0;
-let remainingcards = 1;
+let remainingcards = 0;
 let playerHand = [];
 let houseHand = [];
 
 playerCards.forEach((card, i)=> {
-    card.addEventListener('click', () => playCard(i));
+    card.addEventListener('click', () => {
+        playCard(i);
+        housePlay();
+    });
 });
 
 function drawHand() {
@@ -19,8 +22,8 @@ function drawHand() {
             console.log(data);
             deckID = data.deck_id;
             for(let i = 0; i < playerCards.length; i++) {
-                drawCard(playerCards[i], 'player');
-                drawCard(houseCards[i], 'house');
+                drawCard(i, 'player');
+                drawCard(i, 'house');
             }
         })
         .catch(err => {
@@ -28,15 +31,16 @@ function drawHand() {
     });
 }
 
-function drawCard(oldCard, hand) {
+function drawCard(n, hand) {
     fetch(`https://www.deckofcardsapi.com/api/deck/${deckID}/draw/?count=1`)
     .then(res => res.json())
     .then(data => {
         remainingcards = data.remaining;
-        oldCard.src = data.cards[0].image;
+        if (hand === 'player') playerCards[n].src = data.cards[0].image;
+        else houseCards[n].src = data.cards[0].image;
         data.cards[0].point = setPoint(data.cards[0]);
-        if (hand === 'player') playerHand.push(data.cards[0]);
-        else houseHand.push(data.cards[0]);
+        if (hand === 'player') playerHand[n] = data.cards[0];
+        else houseHand[n] = data.cards[0];
     })
 }
 
@@ -58,7 +62,17 @@ function playCard(n) {
     if(remainingcards > 0) {
         score += playerHand[n].point;
         document.querySelector("#score").innerHTML = score;
-        drawCard(playerCards[n], 'player');
+        drawCard(n, 'player');
+    }
+}
+
+function housePlay() {
+    let n = Math.floor(Math.random() * 4);
+    if(remainingcards > 0) {
+        console.log(houseHand[n])
+        score += houseHand[n].point;
+        document.querySelector("#score").innerHTML = score;
+        drawCard(n, 'house');
     }
 }
 
