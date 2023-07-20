@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tug-O-War</title>
+
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/normalize.css" rel="stylesheet">
+</head>
+<body>
+    <div class="hand">
+        <span class="card"><img class="houseHand" src="css/assets/back.png" alt="card"></span>
+        <span class="card"><img class="houseHand" src="css/assets/back.png" alt="card"></span>
+        <span class="card"><img class="houseHand" src="css/assets/back.png" alt="card"></span>
+        <span class="card"><img class="houseHand" src="css/assets/back.png" alt="card"></span>
+    </div>
+    <div class="interface">
+        <button name="button" id="deal" type="button">Deal</button>
+        <div class="userText">
+            <h1>House Hand</h1>
+            <div class="scoreContainer">
+                <h1>Score: </h1>
+                <h1 id="score">0</h1>
+            </div>
+            <h1>Player Hand</h1>
+        </div>
+        <button name="button" id="openModal" type="button">How to play</button>
+    </div>
+    <div class="modal">
+        <div class="modalHeader">
+            <h3>How to play</h3>
+            <button name="button" type="button" id="closeModal">&times;</button>
+        </div>
+        <div class="modalBody">
+            Click the "Deal" button to begin. Black cards have a positive value and red cards a negative.
+            The player wins by either hitting the number 33 and loses if the house reaches -33. Additionally,
+            the player will win if the deck has run out of cards and the score is above 0 and less than 33,
+            or less than -33. Otherwise, the house wins.
+        </div>
+    </div>
+    <div class="overlay"></div>
+    <div class='hand'>
+        <span class="card"><img class="playerHand" src="css/assets/back.png" alt="card"></span>
+        <span class="card"><img class="playerHand" src="css/assets/back.png" alt="card"></span>
+        <span class="card"><img class="playerHand" src="css/assets/back.png" alt="card"></span>
+        <span class="card"><img class="playerHand" src="css/assets/back.png" alt="card"></span>
+    </div>
+
+    <script type="text/javascript" src="js/main.js" defer></script>
+</body>
+</html>
