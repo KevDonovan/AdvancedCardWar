@@ -6,7 +6,7 @@ let modal = document.querySelector('.modal');
 let overlay = document.querySelector('.overlay');
 let deckID = '';
 let score = 0;
-let remainingcards = 0;
+let remainingCards = 0;
 let playerHand = [];
 let houseHand = [];
 let targetScore = 33;
@@ -53,7 +53,8 @@ function drawCard(n, hand) {
     fetch(`https://www.deckofcardsapi.com/api/deck/${deckID}/draw/?count=1`)
     .then(res => res.json())
     .then(data => {
-        remainingcards = data.remaining;
+        remainingCards = data.remaining;
+        document.querySelector("#remain").innerHTML = remainingCards;
         if (hand === 'player') playerCards[n].src = data.cards[0].image;
         else houseCards[n].src = data.cards[0].image;
         data.cards[0].point = setPoint(data.cards[0]);
@@ -77,7 +78,7 @@ function setPoint(card) {
 }
 
 function playCard(n) {
-    if(remainingcards > 0) {
+    if(remainingCards > 0) {
         score += playerHand[n].point;
         document.querySelector("#score").innerHTML = score;
         drawCard(n, 'player');
@@ -86,13 +87,13 @@ function playCard(n) {
 
 function housePlay() {
     let n = Math.floor(Math.random() * 4);
-    if(remainingcards > 0) {
+    if(remainingCards > 0) {
         console.log(houseHand[n])
         score += houseHand[n].point;
         document.querySelector("#score").innerHTML = score;
         drawCard(n, 'house');
     }
-    console.log(remainingcards);
+    console.log(remainingCards);
     checkEnd();
 }
 
@@ -103,7 +104,7 @@ function checkEnd() {
     }else if (score === -targetScore) {
         window.alert("You lose!");
         location.reload();
-    }else if (remainingcards === 0) {
+    }else if (remainingCards === 0) {
         if((score > 0 && score < targetScore) || score < -targetScore){
             window.alert("You Win!");
         } else if ((score < 0 && score > -targetScore) || score > targetScore){
