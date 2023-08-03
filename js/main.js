@@ -1,5 +1,5 @@
 
-document.querySelector("#deal").addEventListener("click", drawHand);
+document.querySelector("#deal").addEventListener("click", shuffle);
 let playerCards = document.querySelectorAll(".playerHand");
 let houseCards = document.querySelectorAll(".houseHand");
 let modal = document.querySelector('.modal');
@@ -7,8 +7,8 @@ let overlay = document.querySelector('.overlay');
 let deckID = '';
 let score = 0;
 let remainingCards = 0;
-let playerHand = [];
-let houseHand = [];
+let playerHand = ['inactive', 'inactive', 'inactive', 'inactive'];
+let houseHand = ['inactive', 'inactive', 'inactive', 'inactive'];
 let targetScore = 33;
 
 document.querySelector('#openModal').addEventListener('click', openModal);
@@ -19,7 +19,6 @@ overlay.addEventListener('click', closeModal);
 playerCards.forEach((card, i)=> {
     card.addEventListener('click', () => {
         playCard(i);
-        housePlay();
     });
 });
 
@@ -33,20 +32,25 @@ function closeModal() {
     overlay.classList.remove('active');
 }
 
-function drawHand() {
+function shuffle() {
     fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
         .then(res => res.json())
         .then(data => {
             console.log(data);
             deckID = data.deck_id;
-            for(let i = 0; i < playerCards.length; i++) {
-                drawCard(i, 'player');
-                drawCard(i, 'house');
-            }
+            drawHand();
         })
         .catch(err => {
             console.log(`error ${err}`);
     });
+}
+
+
+function drawHand() {
+    for(let i = 0; i < playerCards.length; i++) {
+        if(playerHand[i] === 'inactive') drawCard(i, 'player');
+        if(houseHand[i] === 'inactive') drawCard(i, 'house');
+    }
 }
 
 function drawCard(n, hand) {
@@ -77,24 +81,45 @@ function setPoint(card) {
     }
 }
 
+function checkDeal() {
+    if(playerHand.filter(card => card != 'inactive').length == 1) {
+        drawHand();
+    }
+}
+
 function playCard(n) {
-    if(remainingCards > 0) {
+    if(remainingCards > 0 && playerHand[n] != 'inactive') {
         score += playerHand[n].point;
         document.querySelector("#score").innerHTML = score;
-        drawCard(n, 'player');
+        //drawCard(n, 'player');
+        playerHand[n] = 'inactive';
+        playerCards[n].src = "css/assets/back.png";
+        housePlay();
+        checkDeal();
     }
 }
 
 function housePlay() {
-    let n = Math.floor(Math.random() * 4);
     if(remainingCards > 0) {
+        let n = housePick();
         console.log(houseHand[n])
         score += houseHand[n].point;
         document.querySelector("#score").innerHTML = score;
-        drawCard(n, 'house');
+        houseHand[n] = 'inactive';
+        houseCards[n].src = "css/assets/back.png";
+        //drawCard(n, 'house');
     }
     console.log(remainingCards);
     checkEnd();
+}
+
+function housePick() {
+    let activeIndices = [];
+    houseHand.forEach((card, i) => {
+        if(card != 'inactive') activeIndices.push(i);
+    })
+    let randomIndex = Math.floor(Math.random() * activeIndices.length);
+    return activeIndices[randomIndex];
 }
 
 function checkEnd() {
