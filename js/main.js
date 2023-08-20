@@ -6,7 +6,7 @@ let modal = document.querySelector('.modal');
 let overlay = document.querySelector('.overlay');
 let deckID = '';
 let score = 0;
-let remainingCards = 0;
+let remainingCards = 52;
 let playerHand = ['inactive', 'inactive', 'inactive', 'inactive'];
 let houseHand = ['inactive', 'inactive', 'inactive', 'inactive'];
 let targetScore = 33;
@@ -47,7 +47,7 @@ function shuffle() {
 
 
 function drawHand() {
-    for(let i = 0; i < playerCards.length; i++) {
+    for(let i = 0; i < playerCards.length && i < remainingCards; i++) {
         if(playerHand[i] === 'inactive') drawCard(i, 'player');
         if(houseHand[i] === 'inactive') drawCard(i, 'house');
     }
@@ -82,13 +82,13 @@ function setPoint(card) {
 }
 
 function checkDeal() {
-    if(playerHand.filter(card => card != 'inactive').length == 1) {
+    if(playerHand.filter(card => card != 'inactive').length == 1 && remainingCards > 0) {
         drawHand();
     }
 }
 
 function playCard(n) {
-    if(remainingCards > 0 && playerHand[n] != 'inactive') {
+    if(playerHand[n] != 'inactive') {
         score += playerHand[n].point;
         document.querySelector("#score").innerHTML = score;
         //drawCard(n, 'player');
