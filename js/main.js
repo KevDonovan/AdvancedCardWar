@@ -46,10 +46,10 @@ async function shuffle() {
     }
 }
 
-function drawHand() {
+async function drawHand() {
     for(let i = 0; i < playerCards.length; i++) {
-        if(playerHand[i] === 'inactive' && remainingCards > 0) drawCard(i, 'player');
-        if(houseHand[i] === 'inactive' && remainingCards > 0) drawCard(i, 'house');
+        if(playerHand[i] === 'inactive' && remainingCards > 0) await drawCard(i, 'player');
+        if(houseHand[i] === 'inactive' && remainingCards > 0) await drawCard(i, 'house');
     }
 }
 
