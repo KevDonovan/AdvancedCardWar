@@ -47,9 +47,14 @@ async function shuffle() {
 }
 
 async function drawHand() {
-    for(let i = 0; i < playerCards.length; i++) {
-        if(playerHand[i] === 'inactive' && remainingCards > 0) await drawCard(i, 'player');
-        if(houseHand[i] === 'inactive' && remainingCards > 0) await drawCard(i, 'house');
+    try{
+        for(let i = 0; i < playerCards.length; i++) {
+            if(playerHand[i] === 'inactive' && remainingCards > 0) await drawCard(i, 'player');
+            if(houseHand[i] === 'inactive' && remainingCards > 0) await drawCard(i, 'house');
+        }
+    }
+    catch (error) {
+        console.log(`error ${error}`);
     }
 }
 
@@ -108,15 +113,13 @@ function playCard(n) {
 }
 
 function housePlay() {
-    if(remainingCards > 0) {
-        let n = housePick();
-        console.log(houseHand[n])
-        score += houseHand[n].point;
-        document.querySelector("#score").innerHTML = score;
-        houseHand[n] = 'inactive';
-        houseCards[n].src = "css/assets/back.png";
-        //drawCard(n, 'house');
-    }
+    let n = housePick();
+    console.log(houseHand[n]);
+    score += houseHand[n].point;
+    document.querySelector("#score").innerHTML = score;
+    houseHand[n] = 'inactive';
+    houseCards[n].src = "css/assets/back.png";
+    //drawCard(n, 'house');
     checkEnd();
 }
 
@@ -129,19 +132,28 @@ function housePick() {
     return activeIndices[randomIndex];
 }
 
-function checkEnd() {
+async function checkEnd() {
+    await awaitTimeout(2000);
     if(score === targetScore) {
         window.alert("You Win!");
         location.reload();
     }else if (score === -targetScore) {
         window.alert("You lose!");
         location.reload();
-    }else if (remainingCards === 0) {
+    }else if (remainingCards === 0 && houseHand.filter(e => e === 'inactive').length == 3) {
         if((score > 0 && score < targetScore) || score < -targetScore){
             window.alert("You Win!");
         } else if ((score < 0 && score > -targetScore) || score > targetScore){
             window.alert("You lose!");
+        } else {
+            window.alert("Draw!");
         }
         location.reload();
     }
+}
+
+function awaitTimeout(t) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve('test'), t)
+    })
 }
